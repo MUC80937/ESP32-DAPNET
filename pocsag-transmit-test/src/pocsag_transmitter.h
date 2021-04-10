@@ -10,8 +10,8 @@
 // #define POCSAG_DEBUG
 #define POCSAG_DEBUG_PORT   Serial
 #if defined(POCSAG_DEBUG)
-  #define POCSAG_DEBUG_PRINT(...) { RADIOLIB_DEBUG_PORT.print(__VA_ARGS__); }
-  #define POCSAG_DEBUG_PRINTLN(...) { RADIOLIB_DEBUG_PORT.println(__VA_ARGS__); }
+  #define POCSAG_DEBUG_PRINT(...) { POCSAG_DEBUG_PORT.print(__VA_ARGS__); }
+  #define POCSAG_DEBUG_PRINTLN(...) { POCSAG_DEBUG_PORT.println(__VA_ARGS__); }
 #else
   #define POCSAG_DEBUG_PRINT(...) {}
   #define POCSAG_DEBUG_PRINTLN(...) {}

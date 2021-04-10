@@ -1,8 +1,12 @@
 #include <Arduino.h>
+#include <WiFi.h>
+#include <ezTime.h>
+
 #define RADIOLIB_LOW_LEVEL
 #define RADIOLIB_GODMODE
 
 #include <RadioLib.h>
+#include <dapnetv1_client.h>
 #include <pocsag_transmitter.h>
 //Better
 #define LORA_SCK        5
@@ -16,6 +20,8 @@
 
 SX1276 radio = new Module(LORA_SS, LORA_DIO0, LORA_RST, LORA_DIO1);
 POCSAGTransmitter transmitter;
+WiFiClient client;
+DAPNETV1Client dapnet(&client);
 
 void setup() {
   Serial.begin(115200);
@@ -30,18 +36,36 @@ void setup() {
   Serial.println("initialized modem");
   transmitter.begin(&radio);
   Serial.println("initialized transmitter");
-  delay(2e2);
+
+  WiFi.begin("devtest","devtest1337");
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println(WiFi.localIP());
+	Serial.println(F("waiting for Timesync"));
+  waitForSync();
+	Serial.println();
+	Serial.println("UTC:             " + UTC.dateTime());
+
+  dapnet.begin();
+  //ToDo we need wificonnection stuff here
+  
+
+  /*delay(2e2);
   transmitter.queuePage(133701, 3, "Testbericht 0"); // should never be sent
   transmitter.clearQueue();
   transmitter.queuePage(133701, 3, "Testbericht 1");
   transmitter.queuePage(133703, 3, "Testbericht -2");
   transmitter.queuePage(133706, 3, "Testbericht --3");
   transmitter.queuePage(133707, 3, "Testbericht ---4");
-  transmitter.transmitBatch();
+  transmitter.transmitBatch();*/
 }
 
 void loop() {
   //Serial.print(".");
-  delay(50);
+  dapnet.loop();
+  time_t x = UTC.now();
+  
   // put your main code here, to run repeatedly:
 }
